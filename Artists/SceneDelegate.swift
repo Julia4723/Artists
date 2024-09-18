@@ -11,14 +11,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
 
-
+    
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-   
-        guard let scene = (scene as? UIWindowScene) else { return }
-        self.window = UIWindow(windowScene: scene)
-        self.window?.rootViewController = MainViewController()
-        self.window?.makeKeyAndVisible()
+        let windowScene = scene as? UIWindowScene
+        window = UIWindow(windowScene: windowScene!)
+        let mainVC = ModuleBuilder.createMainModule()
+        window?.rootViewController = mainVC
+        window?.makeKeyAndVisible()
     }
+
 
     func sceneDidDisconnect(_ scene: UIScene) {
         // Called as the scene is being released by the system.
