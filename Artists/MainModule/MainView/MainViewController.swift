@@ -42,9 +42,6 @@ class MainViewController: UIViewController {
 }
 
 
-
-
-
 extension MainViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -53,9 +50,20 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+        var cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+        
+        if cell != nil {
+            cell = UITableViewCell(style: .subtitle, reuseIdentifier: "cell")
+        }
         let artist = presenter.artists?[indexPath.row]
-        cell.textLabel?.text = artist?.name
+
+        if let artist = artist {
+            cell.textLabel?.text = artist.name       // Set the main text (e.g., artist name)
+            cell.detailTextLabel?.text = artist.bio  // Set the detail text (e.g., artist bio)
+        } else {
+            cell.textLabel?.text = "Unknown Artist"
+            cell.detailTextLabel?.text = ""
+        }
         if let imageName = artist?.image {
             cell.imageView?.image = UIImage(named: imageName)
         } else {
@@ -67,8 +75,12 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let artist = presenter.artists?[indexPath.row]
-        let detailVC = ModuleBuilder.createDetailModule(artist: artist)
-        navigationController?.pushViewController(detailVC, animated: true)
+        let works = presenter.works?[indexPath.row]
+        // Инициализация нового контроллера
+        let detailsVC = ModuleBuilder.createDetailModule(artist: artist, works: works)
+    
+        // Навигация к новому контроллеру
+        navigationController?.pushViewController(detailsVC, animated: true)
     }
 }
 

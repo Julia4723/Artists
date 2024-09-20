@@ -20,6 +20,7 @@
 		CE0EA86B2C98898F00FA829F /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE0EA86A2C98898F00FA829F /* NetworkService.swift */; };
 		CE0EA86E2C988AC100FA829F /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = CE0EA86D2C988AC100FA829F /* Alamofire */; };
 		CEB994782C9B2E8300EA63F3 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = CEB994772C9B2E8300EA63F3 /* Kingfisher */; };
+		CEB9947B2C9D6BE700EA63F3 /* DetailsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB9947A2C9D6BE700EA63F3 /* DetailsCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,6 +37,7 @@
 		CE0EA8652C983A2800FA829F /* DetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailsViewController.swift; sourceTree = "<group>"; };
 		CE0EA8682C98881300FA829F /* ModuleBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModuleBuilder.swift; sourceTree = "<group>"; };
 		CE0EA86A2C98898F00FA829F /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
+		CEB9947A2C9D6BE700EA63F3 /* DetailsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailsCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -120,6 +122,7 @@
 		CE0EA8602C9839E600FA829F /* DetailsModule */ = {
 			isa = PBXGroup;
 			children = (
+				CEB994792C9D6BD200EA63F3 /* DetailsCell */,
 				CE0EA8622C9839FF00FA829F /* DetailsPresenter */,
 				CE0EA8612C9839F100FA829F /* DetailsView */,
 			);
@@ -148,6 +151,14 @@
 				CE0EA8682C98881300FA829F /* ModuleBuilder.swift */,
 			);
 			path = ModuleBuilder;
+			sourceTree = "<group>";
+		};
+		CEB994792C9D6BD200EA63F3 /* DetailsCell */ = {
+			isa = PBXGroup;
+			children = (
+				CEB9947A2C9D6BE700EA63F3 /* DetailsCell.swift */,
+			);
+			path = DetailsCell;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -230,6 +241,7 @@
 			files = (
 				CE0EA85F2C9836CE00FA829F /* MainPresenter.swift in Sources */,
 				CE0EA8482C9834C300FA829F /* MainViewController.swift in Sources */,
+				CEB9947B2C9D6BE700EA63F3 /* DetailsCell.swift in Sources */,
 				CE0EA8442C9834C300FA829F /* AppDelegate.swift in Sources */,
 				CE0EA8692C98881300FA829F /* ModuleBuilder.swift in Sources */,
 				CE0EA86B2C98898F00FA829F /* NetworkService.swift in Sources */,

@@ -19,22 +19,27 @@ protocol MainViewControllerProtocol: AnyObject {
 protocol MainPresenterProtocol: AnyObject {
     init(view: MainViewControllerProtocol, networkService: NetworkServiceProtocol)
     func getArtists()
+    
     var artists: [Artist]? {get set}
+    var works: [Work]? {get set}
 }
 
 class MainPresenter: MainPresenterProtocol {
     weak var view: MainViewControllerProtocol?
     let networkService: NetworkServiceProtocol!
+    
     var artists: [Artist]?
+    var works: [Work]?
     
     required init(view: any MainViewControllerProtocol, networkService: NetworkServiceProtocol) {
+        
         self.view = view
         self.networkService = networkService
         getArtists()
     }
     
     func getArtists() {
-        networkService.fetchAF { [weak self] result in
+        networkService.fetchArtist { [weak self] result in
             guard let self = self else { return}
             DispatchQueue.main.async {
                 switch result {
@@ -49,3 +54,4 @@ class MainPresenter: MainPresenterProtocol {
         }
     }
 }
+

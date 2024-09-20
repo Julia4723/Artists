@@ -19,6 +19,7 @@ struct Artists: Codable {
     
 }
 
+
 // MARK: - Artist
 struct Artist: Codable {
     var name, bio, image: String
@@ -33,9 +34,10 @@ struct Artist: Codable {
     
 }
 
+
 // MARK: - Work
 struct Work: Codable {
-    var title, image, info: String
+    var title, image, info: String?
     
     enum CodingKeys: CodingKey {
         case title

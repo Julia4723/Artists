@@ -9,7 +9,7 @@ import UIKit
 
 protocol Builder {
     static func createMainModule() -> UIViewController
-    static func createDetailModule(artist: Artist?) -> UIViewController
+    static func createDetailModule(artist: Artist?, works: Work?) -> UIViewController
 }
 
 class ModuleBuilder: Builder {
@@ -22,10 +22,10 @@ class ModuleBuilder: Builder {
         return view
     }
     
-    static func createDetailModule(artist: Artist?) -> UIViewController {
+    static func createDetailModule(artist: Artist?, works: Work?) -> UIViewController {
         let view = DetailsViewController()
         let networkService = NetworkService()
-        let presenter = DetailsPresenter(view: view, networkService: networkService, artist: artist)
+        let presenter = DetailsPresenter(view: view, networkService: networkService, artist: artist, works: works)
         view.presenter = presenter
         return view
     }
