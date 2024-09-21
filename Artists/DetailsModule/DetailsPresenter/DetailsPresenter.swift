@@ -9,46 +9,43 @@ import UIKit
 
 
 protocol DetailsViewControllerProtocol: AnyObject {
-//    func setArtist(artist: Artist?)
-//    func setWorks(works: Work?)
-    
     func success()
     func failure(error: Error)
 }
 
 
 protocol DetailsPresenterProtocol: AnyObject {
-    init(view: DetailsViewControllerProtocol, networkService: NetworkServiceProtocol, artist: Artist?, works: Work?)
-    //func setArtist()
+    init(view: DetailsViewControllerProtocol, networkService: NetworkServiceProtocol, artist: Artist?, works: [Work]?)
+    func didSelectArtist(_ artist: Artist, works: [Work])
     var works: [Work]? {get set}
+    var artist: Artist? {get set}
     func setImg()
     
 }
 
 class DetailsPresenter: DetailsPresenterProtocol {
+    func didSelectArtist(_ artist: Artist, works: [Work]) {
+        self.artist = artist
+        self.works = works
+    }
    
     weak var view: DetailsViewControllerProtocol?
     let networkService: NetworkServiceProtocol!
     var artist: Artist?
+   
     var works2: Work?
     var works: [Work]?
     
     
-    required init(view: any DetailsViewControllerProtocol, networkService: NetworkServiceProtocol, artist: Artist?, works: Work?) {
+    required init(view: any DetailsViewControllerProtocol, networkService: NetworkServiceProtocol, artist: Artist?, works: [Work]?) {
         self.view = view
         self.networkService = networkService
         self.artist = artist
-        self.works2 = works
+        self.works = works
 
-       // setArtist()
         setImg()
         
     }
-    
-//    public func setArtist() {
-//        self.view?.setArtist(artist: artist)
-//        self.view?.setWorks(works: works2)
-//    }
     
     public func setImg() {
         networkService.fetchWork { [weak self] result in

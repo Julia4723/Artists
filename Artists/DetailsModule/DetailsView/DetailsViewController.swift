@@ -10,19 +10,18 @@ import Kingfisher
 
 class DetailsViewController: UIViewController {
     
-
-
+   
     // MARK: - Presenter
     var presenter: DetailsPresenterProtocol!
-    
+
     
     // MARK: - Properties
     var artist: Artist?
-    var works: Work?
+    var works: [Work]?
     
     private lazy var labelTitle: UILabel = {
         let label = UILabel()
-        label.text = artist?.name
+        label.translatesAutoresizingMaskIntoConstraints = false
         label.font = .systemFont(ofSize: 24)
         return label
     }()
@@ -43,11 +42,13 @@ class DetailsViewController: UIViewController {
         view.backgroundColor = .systemBackground
         
         view.addSubview(tableView)
+       
         NSLayoutConstraint.activate([
+            
             tableView.topAnchor.constraint(equalTo: view.topAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
         ])
     }
 }
@@ -56,21 +57,29 @@ class DetailsViewController: UIViewController {
 extension DetailsViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    
         return presenter.works?.count ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let data = presenter.works else {
+            fatalError("Application error no cell data available")
+        }
+       
+        let cellData = presenter.works?[indexPath.row]
+        
+        
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         
-        if let work = presenter.works?[indexPath.row] {
-                   cell.textLabel?.text = work.title
-                   cell.detailTextLabel?.text = work.info
-            if let imageName = work.image {
-                       cell.imageView?.image = UIImage(named: imageName)
-                   } else {
-                       cell.imageView?.image = UIImage(named: "placeholderImageName")
-                   }
-               }
+        cell.textLabel?.text = cellData?.title
+        cell.detailTextLabel?.text = cellData?.info
+        
+        if let imageName = cellData?.image {
+            cell.imageView?.image = UIImage(named: imageName)
+        } else {
+            cell.imageView?.image = UIImage(named: "placeholderImageName")
+        }
+        
         return cell
     }
 }
@@ -78,7 +87,8 @@ extension DetailsViewController: UITableViewDataSource, UITableViewDelegate {
 
 
 extension DetailsViewController: DetailsViewControllerProtocol {
-
+    
+    
     func success() {
         tableView.reloadData()
     }

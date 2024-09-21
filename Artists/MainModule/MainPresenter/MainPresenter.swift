@@ -13,6 +13,7 @@ import Alamofire
 protocol MainViewControllerProtocol: AnyObject {
     func success()
     func failure(error: Error)
+    
 }
 
 

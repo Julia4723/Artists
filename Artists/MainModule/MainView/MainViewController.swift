@@ -9,11 +9,22 @@ import UIKit
 
 
 class MainViewController: UIViewController {
-
     
     // MARK: - Presenter
     var presenter: MainPresenterProtocol!
-   
+    let searchController = UISearchController(searchResultsController: nil)
+    
+    
+    private var filteredArtist = [Artist]()
+    private var searchBarIsEmpty: Bool {
+        guard let text = searchController.searchBar.text else { return false }
+        return text.isEmpty
+    }
+    
+    private var isFiltering: Bool {
+        return searchController.isActive && !searchBarIsEmpty
+    }
+    
     
     private lazy var tableView: UITableView = {
         let table = UITableView(frame: .zero, style: .insetGrouped)
@@ -27,11 +38,18 @@ class MainViewController: UIViewController {
     // MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        //Setup search controller
+        searchController.searchResultsUpdater = self
+        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.searchBar.placeholder = "Search"
+        navigationItem.searchController = searchController
+        definesPresentationContext = true
         
         view.backgroundColor = .systemBackground
         view.addSubview(tableView)
-       
+        
+        
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: view.topAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
@@ -45,7 +63,9 @@ class MainViewController: UIViewController {
 extension MainViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        
+        if isFiltering {
+            return filteredArtist.count
+        }
         return presenter.artists?.count ?? 0
     }
     
@@ -55,10 +75,18 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate {
         if cell != nil {
             cell = UITableViewCell(style: .subtitle, reuseIdentifier: "cell")
         }
-        let artist = presenter.artists?[indexPath.row]
-
+        
+        var artist: Artist?
+        
+        if isFiltering {
+            artist = filteredArtist[indexPath.row]
+        } else {
+            artist = (presenter.artists?[indexPath.row])!
+        }
+        
+        
         if let artist = artist {
-            cell.textLabel?.text = artist.name       // Set the main text (e.g., artist name)
+            cell.textLabel?.text = artist.name // Set the main text (e.g., artist name)
             cell.detailTextLabel?.text = artist.bio  // Set the detail text (e.g., artist bio)
         } else {
             cell.textLabel?.text = "Unknown Artist"
@@ -69,20 +97,27 @@ extension MainViewController: UITableViewDataSource, UITableViewDelegate {
         } else {
             cell.imageView?.image = UIImage(named: "placeholderImageName") // Fallback if no image found
         }
-
+        
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let artist = presenter.artists?[indexPath.row]
-        let works = presenter.works?[indexPath.row]
-        // Инициализация нового контроллера
-        let detailsVC = ModuleBuilder.createDetailModule(artist: artist, works: works)
-    
-        // Навигация к новому контроллеру
-        navigationController?.pushViewController(detailsVC, animated: true)
+        let artist: Artist
+        
+        if let indexPath = tableView.indexPathForSelectedRow {
+            if isFiltering {
+                artist = filteredArtist[indexPath.row]
+                
+            } else {
+                artist = (presenter.artists?[indexPath.row])!
+            }
+            let works = artist.works
+            let detailVc = ModuleBuilder.createDetailModule(artist: artist, works: works)
+            navigationController?.pushViewController(detailVc, animated: true)
+        }
     }
 }
+
 
 extension MainViewController: MainViewControllerProtocol {
     func success() {
@@ -91,5 +126,22 @@ extension MainViewController: MainViewControllerProtocol {
     
     func failure(error: any Error) {
         print(error.localizedDescription)
+    }
+}
+
+
+extension MainViewController: UISearchResultsUpdating {
+    func updateSearchResults(for searchController: UISearchController) {
+        filterContentForSearchText(searchController.searchBar.text!)
+    }
+    
+    private func filterContentForSearchText(_ searchText: String) {
+        
+        guard let artists = presenter.artists else { return }
+        
+        filteredArtist = artists.filter { (artist: Artist) -> Bool in
+            return artist.name.lowercased().contains(searchText.lowercased())
+        }
+        tableView.reloadData()
     }
 }
